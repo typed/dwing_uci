@@ -11,7 +11,7 @@
 
 #ifdef _MSC_VER
 #pragma intrinsic(memcpy, memset, wcslen, wcscpy)
-#pragma warning(disable:4706) // Ìõ¼ş±í´ïÊ½ÄÚµÄ¸³Öµ
+#pragma warning(disable:4706) // æ¡ä»¶è¡¨è¾¾å¼å†…çš„èµ‹å€¼
 #endif
 
 #ifdef __GNUC__
@@ -90,7 +90,7 @@ __forceinline void RemoveInfo(Buffer& buffer, char hevc_mode)
 	}
 }
 
-// ·µ»Ø<0±íÊ¾´íÎó,>=0±íÊ¾Êä³ö³¤¶È,Êä³öµÄ*dst_yuv,*dst_alphaÒªÓÃfreeÊÍ·ÅÄÚ´æ
+// è¿”å›<0è¡¨ç¤ºé”™è¯¯,>=0è¡¨ç¤ºè¾“å‡ºé•¿åº¦,è¾“å‡ºçš„*dst_yuv,*dst_alphaè¦ç”¨freeé‡Šæ”¾å†…å­˜
 __forceinline int BMP2YUV(const void* src, int srclen, void** dst_yuv, void** dst_alpha, int* width, int* height, char yuv444)
 {
 	if(!dst_yuv || !dst_alpha || !width || !height) return -1;
@@ -109,13 +109,13 @@ __forceinline int BMP2YUV(const void* src, int srclen, void** dst_yuv, void** ds
 	if(srclen - srcbase < srcwb * srch) return -5;
 	if(srcb != 32 && srcb != 24) return -6;
 
-	// ¿í¸ßÏñËØ²¹³ä
+	// å®½é«˜åƒç´ è¡¥å……
 	U8* srctemp;
 	int srctempwb;
 	if(srcw != dstw || srch != dsth)
 	{
 		srctempwb = dstw * (srcb/8);
-		srctemp = (U8*)malloc((srctempwb + 4) * dsth + 4);	// +4: ±£Ö¤¿í¶È>=srcwb,±£Ö¤MMX×ª»»Ê±²»¶Á³ö½ç
+		srctemp = (U8*)malloc((srctempwb + 4) * dsth + 4);	// +4: ä¿è¯å®½åº¦>=srcwb,ä¿è¯MMXè½¬æ¢æ—¶ä¸è¯»å‡ºç•Œ
 		if(!srctemp) return -7;
 		if(srch == dsth)
 		{
@@ -147,7 +147,7 @@ __forceinline int BMP2YUV(const void* src, int srclen, void** dst_yuv, void** ds
 		srctempwb = srcwb;
 	}
 
-	// ¿ªÊ¼×ª»»
+	// å¼€å§‹è½¬æ¢
 	if(!(*dst_yuv = malloc(dstlen)))
 	{
 		if(srctemp != (U8*)src + srcbase) free(srctemp);
@@ -172,7 +172,7 @@ __forceinline int BMP2YUV(const void* src, int srclen, void** dst_yuv, void** ds
 			U8* const dst4[4] = { (U8*)*dst_yuv, (U8*)*dst_yuv + dstw*dsth*2, (U8*)*dst_yuv + dstw*dsth*2 + dstw*dsth/4*2, (U8*)*dst_alpha };
 			const int dsts[4] = { dstw, dstw/2, dstw/2, dstw };
 			BGRA_YUVA420_F_10(dst4, dsts, srctemp + srctempwb * (dsth-1), -srctempwb, dstw, dsth);
-			memset((U8*)*dst_alpha + dstw * dsth, 0x80, dstw * dsth / 2);	// Ìî³äalphaµÄUVÍ¨µÀ
+			memset((U8*)*dst_alpha + dstw * dsth, 0x80, dstw * dsth / 2);	// å¡«å……alphaçš„UVé€šé“
 		}
 	}
 	else
@@ -194,7 +194,7 @@ __forceinline int BMP2YUV(const void* src, int srclen, void** dst_yuv, void** ds
 			U8* const dst4[4] = { (U8*)*dst_yuv, (U8*)*dst_yuv + dstw*dsth*2, (U8*)*dst_yuv + dstw*dsth*2*2, (U8*)*dst_alpha };
 			const int dsts[4] = { dstw, dstw, dstw, dstw };
 			BGRA_YUVA444_F_10(dst4, dsts, srctemp + srctempwb * (dsth-1), -srctempwb, dstw, dsth);
-			memset((U8*)*dst_alpha + dstw * dsth, 0x80, dstw * dsth * 2);	// Ìî³äalphaµÄUVÍ¨µÀ
+			memset((U8*)*dst_alpha + dstw * dsth, 0x80, dstw * dsth * 2);	// å¡«å……alphaçš„UVé€šé“
 		}
 	}
 
